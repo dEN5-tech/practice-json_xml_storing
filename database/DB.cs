@@ -44,13 +44,13 @@ namespace json_xml_storing.database
 
         public T Get(int id)
         {
-            // Example: Assuming T has a property named "Id"
+            //возвращяет значение по  айди  
             return data.FirstOrDefault(x => GetPropertyValue<int>(x, "Id") == id);
         }
 
         public void Update(int id, T updatedItem)
         {
-            // Example: Assuming T has a property named "Id"
+            // обновляет поля по айди 
             var existingItem = data.FirstOrDefault(x => GetPropertyValue<int>(x, "Id") == id);
             if (existingItem != null)
             {
@@ -61,7 +61,6 @@ namespace json_xml_storing.database
 
         public void Delete(int id)
         {
-            // Example: Assuming T has a property named "Id"
             var itemToRemove = data.FirstOrDefault(x => GetPropertyValue<int>(x, "Id") == id);
             if (itemToRemove != null)
             {
@@ -75,6 +74,7 @@ namespace json_xml_storing.database
             return data.Where(predicate).ToList();
         }
 
+        // получает поля из базового типа, устанавливает новые 
         private void UpdateProperties(T target, T source)
         {
             foreach (var property in typeof(T).GetProperties())
@@ -84,10 +84,23 @@ namespace json_xml_storing.database
             }
         }
 
+        // Получает значение свойства объекта по его имени.
+        // Если свойство существует, возвращает его значение.
+        // В противном случае возвращает значение по умолчанию для типа свойства.
         private TValue GetPropertyValue<TValue>(T obj, string propertyName)
         {
+            // Получаем информацию о свойстве по его имени.
             var property = typeof(T).GetProperty(propertyName);
-            return property != null ? (TValue)property.GetValue(obj) : default(TValue);
+
+            // Если свойство существует, возвращаем его значение.
+            if (property != null)
+            {
+                return (TValue)property.GetValue(obj);
+            }
+
+            // В противном случае возвращаем значение по умолчанию для типа TValue.
+            return default(TValue);
         }
+
     }
 }
